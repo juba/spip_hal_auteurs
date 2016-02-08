@@ -3,7 +3,7 @@
  * Plugin Hal auteurs
  * (c) 2014 kent1
  * Distribue sous licence GPL
- * 
+ *
  * @package SPIP\Hal auteurs\Pipelines
  */
 
@@ -11,17 +11,18 @@ if (!defined("_ECRIRE_INC_VERSION")) return;
 
 /**
  * Insertion dans le pipeline editer_contenu_objet (SPIP)
- * 
+ *
  * Ajout dans le formulaire d'édition de document du sélecteur de licence
- * 
+ *
  * @pipeline editer_contenu_obje
- * @param array $flux 
+ * @param array $flux
  * 		Le contexte du pipeline
- * @return array  $flux 
+ * @return array  $flux
  * 		Le contexte du pipeline complété
  */
 function hal_auteurs_editer_contenu_objet($flux){
-	if(in_array($flux['args']['type'],array('auteur'))){
+
+	if(in_array($flux['args']['type'], array('auteur'))){
 		include_spip('inc/autoriser');
 		if(autoriser('modifierextra_hal', 'auteur', $flux['args']['contexte']['id_auteur'], '', array(
 			'type' => 'auteur',
@@ -29,7 +30,7 @@ function hal_auteurs_editer_contenu_objet($flux){
 			'contexte' => isset($args['contexte']) ? $args['contexte'] : array(),
 			'table' => 'spip_auteurs',
 			'champ' => 'hal',
-		)) && preg_match(",<li [^>]*class=[\"']editer editer_bio.*>(.*)<\/li>,Uims",$flux['data'],$regs)){
+		)) && preg_match(",<div [^>]*class=[\"']editer editer_bio.*>(.*)<\/div>,Uims",$flux['data'],$regs)){
 			$ajouts = recuperer_fond('inclure/saisie_hal_auteurs',$flux['args']['contexte']);
 			$flux['data'] = str_replace($regs[0],$regs[0].$ajouts,$flux['data']);
 		}
@@ -39,13 +40,13 @@ function hal_auteurs_editer_contenu_objet($flux){
 
 /**
  * Ajoute le champ hal sur la visualisation de l'auteur
- * 
+ *
  * @pipeline afficher_contenu_objet
- * @param array $flux 
+ * @param array $flux
  * 		Données du pipeline
  * @return array $flux
  *		Données du pipeline modifiées
- */ 
+ */
 function hal_auteurs_afficher_contenu_objet($flux){
 	if($flux['args']['type'] == "auteur"){
 		$flux['data'] .= recuperer_fond('inclure/vue_hal_auteur',$flux['args']['contexte']);
@@ -55,13 +56,13 @@ function hal_auteurs_afficher_contenu_objet($flux){
 
 /**
  * Vérifier la valeur du champ HAL
- * 
+ *
  * @pipeline formulaire_verifier
- * @param array $flux 
+ * @param array $flux
  * 		Données du pipeline
  * @return array $flux
  *		Données du pipeline modifiées
- */ 
+ */
 function hal_auteurs_formulaire_verifier($flux){
 	if($flux['args']['form'] == "editer_auteur"){
 		if(($hal = _request('hal')) && strlen($hal) > 1){
@@ -88,13 +89,13 @@ function hal_auteurs_formulaire_verifier($flux){
 
 /**
  * Créer et associer un hal à l'auteur lors de la modification champ HAL
- * 
+ *
  * @pipeline post_edition
- * @param array $flux 
+ * @param array $flux
  * 		Données du pipeline
  * @return array $flux
  *		Données du pipeline modifiées
- */ 
+ */
 function hal_auteurs_post_edition($flux){
 	if($flux['args']['table'] == "spip_auteurs" && isset($flux['data']['hal'])){
 		if(isset($flux['data']['hal'])){
@@ -152,7 +153,7 @@ function hal_auteurs_post_edition($flux){
 					}
 				}
 			}
-			
+
 		}
 	}
 	return $flux;
